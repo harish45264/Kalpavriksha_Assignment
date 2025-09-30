@@ -1,11 +1,11 @@
 ﻿# Kalpavriksha_Assignment
 
-#Project 1: Console Calculator in C
+# Project 1: Console Calculator in C
 
 This is a console-based calculator program written in C.
 It accepts a mathematical expression as input in the form of a string and evaluates it.
 
-##Features
+## Features
 
 - Supports addition (+), subtraction (-), multiplication (*), and division (/).
 - Ignores spaces between numbers and operators.
@@ -14,12 +14,12 @@ It accepts a mathematical expression as input in the form of a string and evalua
 - Follows the correct order of operations (multiplication/division before addition/subtraction).
 - Works only with integers.
 
-#Project 2: Employee File Operations in C
+# Project 2: Employee File Operations in C
 
 This is a file-based CRUD (Create, Read, Update, Delete) program written in C for managing employee records.
 It stores and retrieves employee data from a binary file named Employee.DAT.
 
-##Features
+## Features
 
 - Add a new employee record (name, age).
 
@@ -32,3 +32,4 @@ It stores and retrieves employee data from a binary file named Employee.DAT.
 - Each employee is assigned a unique ID automatically.
 
 - Data is stored permanently in the file until deleted.
+
