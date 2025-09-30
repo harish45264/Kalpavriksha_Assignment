@@ -121,7 +121,7 @@ void deleteEmployee(){
     fclose(fp);
     fclose(tmp);
     if(f == 0){
-        printf("\nRecord Found!");
+        return;
     }
     else{
         printf("\nRecord Not Found!");
