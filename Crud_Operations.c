@@ -2,30 +2,31 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#define FILE_NAME "Users.DAT"
 
 void displayMenu(){
-    printf("\n1. Add Employee Data\n");
-    printf("2. Show All Employee Data\n");
-    printf("3. Update Employee Data\n");
-    printf("4. Delete Employee Data\n");
+    printf("\n1. Add User Data\n");
+    printf("2. Show All User Data\n");
+    printf("3. Update User Data\n");
+    printf("4. Delete User Data\n");
     printf("5. Exit\n");
     printf("Enter your Choice: ");
 }
 
-struct Employee{
+struct User{
     int id;
     char name[100];
     int age;
 };
 
-struct Employee e;
+struct User e;
 
 int unique_id = 0;
 int size = sizeof(e);
 
 
 void assignId(){
-    FILE *fp = fopen("Employee.DAT", "rb");
+    FILE *fp = fopen(FILE_NAME, "rb");
     if(fp == NULL){
         printf("\nError While Opening File! OR No Such File Found");
         return;
@@ -37,8 +38,8 @@ void assignId(){
     fclose(fp);
 }
 
-void addEmployee(){
-    FILE *fp = fopen("Employee.DAT","ab");
+void addUser(){
+    FILE *fp = fopen(FILE_NAME,"ab");
     if(fp == NULL){
         printf("\nError While Opening File!");
         return;
@@ -53,8 +54,8 @@ void addEmployee(){
     return;
 }
 
-void displayEmployees(){
-    FILE *fp = fopen("Employee.DAT", "rb");
+void displayUsers(){
+    FILE *fp = fopen(FILE_NAME, "rb");
     if(fp == NULL){
         printf("\nError While Opening File!");
         return;
@@ -65,34 +66,39 @@ void displayEmployees(){
     fclose(fp);
 }
 
-void updateEmployee(){
-    FILE *fp = fopen("Employee.DAT", "rb+");
+void updateUser(){
+    FILE *fp = fopen(FILE_NAME, "rb+");
     if(fp == NULL){
         printf("\nError While Opening File!");
         return;
     }
-    printf("\nEnter Employee Name to Update: ");
-    char name[100];
-    scanf("%[^\n]", name);
+    printf("\nEnter User ID to Update: ");
+    int cur_id;
+    scanf("%d", &cur_id);
+    int found = 0;
+    getchar();
     while(fread(&e, size, 1, fp) == 1){
-        if(_stricmp(e.name, name) == 0){
+        if(e.id == cur_id){
             int cur_id = e.id;
             printf("\nEnter New Name: ");
             scanf("%[^\n]", e.name);
             printf("\nEnter New Age: ");
             scanf("%d", &e.age);
-
             fseek(fp, -size, SEEK_CUR);
             fwrite(&e, size, 1, fp);
+            found = 1;
             break;
         }
+    }
+    if(found == 0){
+        printf("User Not Found!");
     }
     fclose(fp);
 }
 
 
-void deleteEmployee(){
-    FILE *fp = fopen("Employee.DAT", "rb");
+void deleteUser(){
+    FILE *fp = fopen(FILE_NAME, "rb");
     FILE *tmp = fopen("Temp.DAT", "wb");
     if(fp == NULL){
         printf("\nError While Opening File!");
@@ -103,7 +109,7 @@ void deleteEmployee(){
         return;
     }
     char name[100];
-    printf("\nEnter Employee Name To Delete: ");
+    printf("\nEnter User Name To Delete: ");
     scanf("%[^\n]", name);
 
     int f = 1;
@@ -126,8 +132,8 @@ void deleteEmployee(){
     else{
         printf("\nRecord Not Found!");
     }
-    remove("Employee.DAT");
-    rename("Temp.DAT", "Employee.DAT");
+    remove(FILE_NAME);
+    rename("Temp.DAT", FILE_NAME);
 }
 
 int inf = 1;
@@ -141,16 +147,16 @@ int main(){
         getchar();
         switch(ch){
             case 1:
-                addEmployee();
+                addUser();
                 break;
             case 2:
-                displayEmployees();
+                displayUsers();
                 break;
             case 3:
-                updateEmployee();
+                updateUser();
                 break;
             case 4:
-                deleteEmployee();
+                deleteUser();
                 break;
             case 5:
                 inf = 0;
