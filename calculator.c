@@ -97,8 +97,8 @@ int eval(char exp[]){
 }
 
 int main(){
-    char exp[100] = "10 * 2 + 10 * 3 + 4 ; 0";
-    // scanf("%[^\n]", exp);
+    char exp[100];
+    scanf("%[^\n]", exp);
     int res = eval(exp);
     if(numTop != 0 || opTop != -1){
         return 1;
