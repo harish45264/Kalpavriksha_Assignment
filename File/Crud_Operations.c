@@ -14,15 +14,14 @@ void displayMenu(){
 }
 
 struct User{
-    int id;
-    char name[100];
-    int age;
+    int userId;
+    char userName[100];
+    int userAge;
 };
 
-struct User e;
+struct User user;
 
-int unique_id = 0;
-int size = sizeof(e);
+int uniqueId = 0;
 
 
 void assignId(){
@@ -31,25 +30,38 @@ void assignId(){
         printf("\nError While Opening File! OR No Such File Found");
         return;
     }
-    while(fread(&e, size, 1, fp) == 1){
-        unique_id = e.id;
+    while(fread(&user, sizeof(user), 1, fp) == 1){
+        uniqueId = user.userId;
     }
-    unique_id++;
+    uniqueId++;
     fclose(fp);
 }
 
 void addUser(){
     FILE *fp = fopen(FILE_NAME,"ab");
     if(fp == NULL){
-        printf("\nError While Opening File!");
+        printf("\nError while opening file!");
         return;
     }
-    printf("\nEnter Name: ");
-    scanf("%[^\n]", e.name);
-    printf("\nEnter Age: ");
-    scanf("%d", &e.age);
-    e.id = unique_id++;
-    fwrite(&e, sizeof(e), 1, fp);
+    int result;
+    do{
+        printf("\nEnter Name: ");
+        result = scanf("%[^\n]", user.userName);
+        getchar();
+        if(result == 0){
+            printf("Invalid name! Please enter a valid name.\n");
+        }
+    }while(result == 0);
+    do{
+        printf("\nEnter Age: ");
+        scanf("%d", &user.userAge);
+        getchar();
+        if(user.userAge <= 0 || user.userAge >= 100){
+            printf("Invalid age! Please enter a number between 1 and 99.\n");
+        }
+    }while(user.userAge <= 0 || user.userAge >= 100);
+    user.userId = uniqueId++;
+    fwrite(&user, sizeof(user), 1, fp);
     fclose(fp);
     return;
 }
@@ -60,8 +72,8 @@ void displayUsers(){
         printf("\nError While Opening File!");
         return;
     }
-    while(fread(&e, size, 1, fp) == 1){
-        printf("%d %s %d\n", e.id, e.name, e.age);
+    while(fread(&user, sizeof(user), 1, fp) == 1){
+        printf("%d %s %d\n", user.userId, user.userName, user.userAge);
     }
     fclose(fp);
 }
@@ -72,28 +84,41 @@ void updateUser(){
         printf("\nError While Opening File!");
         return;
     }
+    int currentId;
     printf("\nEnter User ID to Update: ");
-    int cur_id;
-    scanf("%d", &cur_id);
+    scanf("%d", &currentId);
     int found = 0;
     getchar();
-    while(fread(&e, size, 1, fp) == 1){
-        if(e.id == cur_id){
-            int cur_id = e.id;
-            printf("\nEnter New Name: ");
-            scanf("%[^\n]", e.name);
-            printf("\nEnter New Age: ");
-            scanf("%d", &e.age);
-            fseek(fp, -size, SEEK_CUR);
-            fwrite(&e, size, 1, fp);
-            found = 1;
-            break;
+    while(fread(&user, sizeof(user), 1, fp) == 1){
+        if(user.userId == currentId){
+            int result;
+            do{
+                printf("\nEnter New Name: ");
+                result = scanf("%[^\n]", user.userName);
+                getchar();
+                if(result == 0){
+                    printf("Invalid name! Please enter a valid name.\n");
+                }
+            }while(result == 0);
+            do{
+                printf("\nEnter New Age: ");
+                scanf("%d", &user.userAge);
+                getchar();
+                if(user.userAge <= 0 || user.userAge >= 100){
+                    printf("Invalid age! Please enter a number between 1 and 99.\n");
+                }
+            }while(user.userAge <= 0 || user.userAge >= 100);
+                fseek(fp, -sizeof(user), SEEK_CUR);
+                fwrite(&user, sizeof(user), 1, fp);
+                found = 1;
+                break;
         }
     }
     if(found == 0){
         printf("User Not Found!");
     }
     fclose(fp);
+    return;
 }
 
 
@@ -108,32 +133,30 @@ void deleteUser(){
         printf("\nError While Opening File!");
         return;
     }
-    char name[100];
-    printf("\nEnter User Name To Delete: ");
-    scanf("%[^\n]", name);
+    int currentId;
+    printf("\nEnter user Id to delete: ");
+    scanf("%d", &currentId);
 
-    int f = 1;
-    while(fread(&e, size, 1, fp) == 1){
-        if(_stricmp(e.name, name) == 0){
-            f = 0;
-            printf("\nRecord Deleted Successfully!");
+    int found = 1;
+    while(fread(&user, sizeof(user), 1, fp) == 1){
+        if(currentId == user.userId){
+            found = 0;
             continue;
         }
         else{
-            fwrite(&e, size, 1, tmp);
+            fwrite(&user, sizeof(user), 1, tmp);
         }
     }
-
     fclose(fp);
     fclose(tmp);
-    if(f == 0){
-        return;
+    if(found == 0){
+        printf("\nRecord Deleted Successfully!");
     }
     else{
         printf("\nRecord Not Found!");
     }
-    remove(FILE_NAME);
-    rename("Temp.DAT", FILE_NAME);
+    remove("Users.DAT");
+    rename("Temp.DAT", "Users.DAT");
 }
 
 int inf = 1;
