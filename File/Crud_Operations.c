@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdlib.h>
+
 #define FILE_NAME "Users.DAT"
 
-void displayMenu(){
+void displayMenu()
+{
     printf("\n1. Add User Data\n");
     printf("2. Show All User Data\n");
     printf("3. Update User Data\n");
@@ -13,7 +15,8 @@ void displayMenu(){
     printf("Enter your Choice: ");
 }
 
-struct User{
+struct User
+{
     int userId;
     char userName[100];
     int userAge;
@@ -21,66 +24,80 @@ struct User{
 
 struct User user;
 
-int uniqueId = 0;
+int gUniqueId = 0;
 
 
-void assignId(){
-    FILE *fp = fopen(FILE_NAME, "rb");
-    if(fp == NULL){
+void assignId()
+{
+    FILE *filePtr = fopen(FILE_NAME, "rb");
+    if(filePtr == NULL)
+    {
         printf("\nError While Opening File! OR No Such File Found");
         return;
     }
-    while(fread(&user, sizeof(user), 1, fp) == 1){
-        uniqueId = user.userId;
+    while(fread(&user, sizeof(user), 1, filePtr) == 1)
+    {
+        gUniqueId = user.userId;
     }
-    uniqueId++;
-    fclose(fp);
+    gUniqueId++;
+    fclose(filePtr);
 }
 
-void addUser(){
-    FILE *fp = fopen(FILE_NAME,"ab");
-    if(fp == NULL){
+void addUser()
+{
+    FILE *filePtr = fopen(FILE_NAME,"ab");
+    if(filePtr == NULL)
+    {
         printf("\nError while opening file!");
         return;
     }
     int result;
-    do{
+    do
+    {
         printf("\nEnter Name: ");
         result = scanf("%[^\n]", user.userName);
         getchar();
-        if(result == 0){
+        if(result == 0)
+        {
             printf("Invalid name! Please enter a valid name.\n");
         }
     }while(result == 0);
-    do{
+    do
+    {
         printf("\nEnter Age: ");
         scanf("%d", &user.userAge);
         getchar();
-        if(user.userAge <= 0 || user.userAge >= 100){
+        if(user.userAge <= 0 || user.userAge >= 100)
+        {
             printf("Invalid age! Please enter a number between 1 and 99.\n");
         }
     }while(user.userAge <= 0 || user.userAge >= 100);
-    user.userId = uniqueId++;
-    fwrite(&user, sizeof(user), 1, fp);
-    fclose(fp);
+    user.userId = gUniqueId++;
+    fwrite(&user, sizeof(user), 1, filePtr);
+    fclose(filePtr);
     return;
 }
 
-void displayUsers(){
-    FILE *fp = fopen(FILE_NAME, "rb");
-    if(fp == NULL){
+void displayUsers()
+{
+    FILE *filePtr = fopen(FILE_NAME, "rb");
+    if(filePtr == NULL)
+    {
         printf("\nError While Opening File!");
         return;
     }
-    while(fread(&user, sizeof(user), 1, fp) == 1){
+    while(fread(&user, sizeof(user), 1, filePtr) == 1)
+    {
         printf("%d %s %d\n", user.userId, user.userName, user.userAge);
     }
-    fclose(fp);
+    fclose(filePtr);
 }
 
-void updateUser(){
-    FILE *fp = fopen(FILE_NAME, "rb+");
-    if(fp == NULL){
+void updateUser()
+{
+    FILE *filePtr = fopen(FILE_NAME, "rb+");
+    if(filePtr == NULL)
+    {
         printf("\nError While Opening File!");
         return;
     }
@@ -89,10 +106,13 @@ void updateUser(){
     scanf("%d", &currentId);
     int found = 0;
     getchar();
-    while(fread(&user, sizeof(user), 1, fp) == 1){
-        if(user.userId == currentId){
+    while(fread(&user, sizeof(user), 1, filePtr) == 1)
+    {
+        if(user.userId == currentId)
+        {
             int result;
-            do{
+            do
+            {
                 printf("\nEnter New Name: ");
                 result = scanf("%[^\n]", user.userName);
                 getchar();
@@ -100,7 +120,8 @@ void updateUser(){
                     printf("Invalid name! Please enter a valid name.\n");
                 }
             }while(result == 0);
-            do{
+            do
+            {
                 printf("\nEnter New Age: ");
                 scanf("%d", &user.userAge);
                 getchar();
@@ -108,28 +129,32 @@ void updateUser(){
                     printf("Invalid age! Please enter a number between 1 and 99.\n");
                 }
             }while(user.userAge <= 0 || user.userAge >= 100);
-                fseek(fp, -sizeof(user), SEEK_CUR);
-                fwrite(&user, sizeof(user), 1, fp);
+                fseek(filePtr, -sizeof(user), SEEK_CUR);
+                fwrite(&user, sizeof(user), 1, filePtr);
                 found = 1;
                 break;
         }
     }
-    if(found == 0){
+    if(found == 0)
+    {
         printf("User Not Found!");
     }
-    fclose(fp);
+    fclose(filePtr);
     return;
 }
 
 
-void deleteUser(){
-    FILE *fp = fopen(FILE_NAME, "rb");
-    FILE *tmp = fopen("Temp.DAT", "wb");
-    if(fp == NULL){
+void deleteUser()
+{
+    FILE *filePtr = fopen(FILE_NAME, "rb");
+    FILE *tmpPtr = fopen("Temp.DAT", "wb");
+    if(filePtr == NULL)
+    {
         printf("\nError While Opening File!");
         return;
     }
-    if(tmp == NULL){
+    if(tmpPtr == NULL)
+    {
         printf("\nError While Opening File!");
         return;
     }
@@ -138,21 +163,26 @@ void deleteUser(){
     scanf("%d", &currentId);
 
     int found = 1;
-    while(fread(&user, sizeof(user), 1, fp) == 1){
-        if(currentId == user.userId){
+    while(fread(&user, sizeof(user), 1, filePtr) == 1)
+    {
+        if(currentId == user.userId)
+        {
             found = 0;
             continue;
         }
-        else{
-            fwrite(&user, sizeof(user), 1, tmp);
+        else
+        {
+            fwrite(&user, sizeof(user), 1, tmpPtr);
         }
     }
-    fclose(fp);
-    fclose(tmp);
-    if(found == 0){
+    fclose(filePtr);
+    fclose(tmpPtr);
+    if(found == 0)
+    {
         printf("\nRecord Deleted Successfully!");
     }
-    else{
+    else
+    {
         printf("\nRecord Not Found!");
     }
     remove("Users.DAT");
@@ -161,14 +191,17 @@ void deleteUser(){
 
 int inf = 1;
 
-int main(){
+int main()
+{
     assignId();
-    while(inf){
+    while(inf)
+    {
         displayMenu();
         int ch;
         scanf("%d", &ch);
         getchar();
-        switch(ch){
+        switch(ch)
+        {
             case 1:
                 addUser();
                 break;
