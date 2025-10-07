@@ -35,7 +35,7 @@ int precedance(char c){
     return -1;
 }
 
-int calc(int num1, int num2, char op, int *err){
+int calculate(int num1, int num2, char op, int *err){
     if((num1 == 0 || num2 == 0) && op == '/'){
         *err = 1;
         printf("Invalid Division By Zero");
@@ -47,8 +47,12 @@ int calc(int num1, int num2, char op, int *err){
     if(op == '/') return num1 / num2;
 }
 
-int eval(char exp[]){
+int evaluate(char exp[]){
     int len = strlen(exp), err = 0;
+    if(len == 0){
+        printf("Invalid Expression.\n");
+        return 0;
+    }
     for(int i = 0; i < len; i++){
         if(isspace(exp[i])){
             continue;
@@ -68,7 +72,7 @@ int eval(char exp[]){
                 int num1 = numPop();
                 int num2 = numPop();
                 char op = opPop();
-                int result = calc(num1, num2, op, &err);
+                int result = calculate(num1, num2, op, &err);
                 if(err == 0){
                     pushNum(result);
                 }
@@ -88,7 +92,7 @@ int eval(char exp[]){
         int num1 = numPop();
         int num2 = numPop();
         char op = opPop();
-        int result = calc(num1, num2, op, &err);
+        int result = calculate(num1, num2, op, &err);
         if(result != -1){
             pushNum(result);
         }
@@ -99,7 +103,7 @@ int eval(char exp[]){
 int main(){
     char exp[100];
     scanf("%[^\n]", exp);
-    int res = eval(exp);
+    int res = evaluate(exp);
     if(numTop != 0 || opTop != -1){
         return 1;
     }
