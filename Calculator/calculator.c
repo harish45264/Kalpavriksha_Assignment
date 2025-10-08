@@ -9,14 +9,14 @@ int gNumTop = -1;
 char gOpStack[100];
 int gOpTop = -1;
 
-void pushNum(int num)
+void pushNum(int number)
 {
-    gNumStack[++gNumTop] = num;
+    gNumStack[++gNumTop] = number;
 }
 
-void pushOp(char op)
+void pushOp(char operator)
 {
-    gOpStack[++gOpTop] = op;
+    gOpStack[++gOpTop] = operator;
 }
 
 int numPop(){
@@ -29,68 +29,70 @@ char opPop()
     return gOpStack[gOpTop--];
 }
 
-int precedance(char c)
+int precedance(char operator)
 {
-    if(c == '+' || c == '-')
+    if(operator == '+' || operator == '-')
     {
         return 1;
     }
-    else if(c == '*' || c == '/')
+    else if(operator == '*' || operator == '/')
     {
         return 2;
     }
     return -1;
 }
 
-int calculate(int num1, int num2, char op, int *errorPtr)
+int calculate(int number1, int number2, char operator, int *errorPtr)
 {
-    if((num1 == 0 || num2 == 0) && op == '/')
+    if((number1 == 0 || number2 == 0) && operator == '/')
     {
         *errorPtr = 1;
         printf("Invalid Division By Zero");
         return -1;
     }
-    if(op == '+') return num1 + num2;
-    if(op == '-') return num1 - num2;
-    if(op == '*') return num1 * num2;
-    if(op == '/') return num1 / num2;
+    if(operator == '+') return number1 + number2;
+    if(operator == '-') return number1 - number2;
+    if(operator == '*') return number1 * number2;
+    if(operator == '/') return number1 / number2;
 }
 
 int evaluate(char expression[])
 {
-    int len = strlen(expression), errorPtr = 0;
-    if(len == 0)
+    int expLength = strlen(expression), errorPtr = 0;
+    if(expLength == 0)
     {
         printf("Invalid Expression.\n");
         gOpTop++;
         return 0;
     }
-    for(int i = 0; i < len; i++)
+    for(int index = 0; index < expLength; index++)
     {
-        if(isspace(expression[i]))
+        if(isspace(expression[index]))
         {
             continue;
         }
 
-        if(isdigit(expression[i]))
+        if(isdigit(expression[index]))
         {
-            int val = 0;
-            while(isdigit(expression[i]))
+            int value = 0;
+            while(isdigit(expression[index]))
             {
-                val = val * 10 + (expression[i] - '0');
-                i++;
+                value = value * 10 + (expression[index] - '0');
+                index++;
             }
-            pushNum(val);
-            i--;
+            pushNum(value);
+            index--;
         }
-        else if(expression[i] == '-' || expression[i] == '+' || expression[i] == '/' || expression[i] == '*')
+        else if(expression[index] == '-' || expression[index] == '+' || 
+                                            expression[index] == '/' || 
+                                            expression[index] == '*')
         {
-            while(gOpTop != -1 && precedance(expression[i]) <= precedance(gOpStack[gOpTop]))
+            while(gOpTop != -1 && precedance(expression[index]) <= precedance(gOpStack[gOpTop]))
             {
-                int num1 = numPop();
-                int num2 = numPop();
-                char op = opPop();
-                int result = calculate(num1, num2, op, &errorPtr);
+                int number1 = numPop();
+                int number2 = numPop();
+                char operator = opPop();
+                int result = calculate(number1, number2, operator, &errorPtr);
                 if(errorPtr == 0)
                 {
                     pushNum(result);
@@ -101,7 +103,7 @@ int evaluate(char expression[])
                     return 0;
                 }
             }
-            pushOp(expression[i]);
+            pushOp(expression[index]);
         }
         else
         {
@@ -111,10 +113,10 @@ int evaluate(char expression[])
     }
     while(gOpTop != -1)
     {
-        int num1 = numPop();
-        int num2 = numPop();
-        char op = opPop();
-        int result = calculate(num1, num2, op, &errorPtr);
+        int number1 = numPop();
+        int number2 = numPop();
+        char operator = opPop();
+        int result = calculate(number1, number2, operator, &errorPtr);
         if(result != -1)
         {
             pushNum(result);
@@ -126,6 +128,7 @@ int evaluate(char expression[])
 int main()
 {
     char expression[100];
+    printf("Enter an Expression: ");
     scanf("%[^\n]", expression);
     int result = evaluate(expression);
     if(gNumTop != 0 || gOpTop != -1)
