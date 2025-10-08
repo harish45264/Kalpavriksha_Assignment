@@ -189,18 +189,18 @@ void deleteUser()
     rename("Temp.DAT", "Users.DAT");
 }
 
-int inf = 1;
+int isRunning = 1;
 
 int main()
 {
     assignId();
-    while(inf)
+    while(isRunning)
     {
         displayMenu();
-        int ch;
-        scanf("%d", &ch);
+        int choice;
+        scanf("%d", &choice);
         getchar();
-        switch(ch)
+        switch(choice)
         {
             case 1:
                 addUser();
@@ -215,7 +215,7 @@ int main()
                 deleteUser();
                 break;
             case 5:
-                inf = 0;
+                isRunning = 0;
                 break;
             default:
                 printf("\nInvalid Option. Enter Again!");
