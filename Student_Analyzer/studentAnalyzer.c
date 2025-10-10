@@ -4,8 +4,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define MAX 100
-
 struct student
 {
     int rollNumber;
@@ -17,26 +15,125 @@ struct student
 };
 
 struct student *studentArray;
+static int gNumberOfStudents;
 
-int main(){
-    int numberOfStudents;
+char findGrade (float currentAverage)
+{
+    if (currentAverage >= 85) return 'A';
+
+    else if (currentAverage >= 70) return 'B';
+
+    else if (currentAverage >= 50) return 'C';
+
+    else if (currentAverage >= 35) return 'D';
+
+    return 'F';
+}
+
+bool isValidRoll (int rollNumber)
+{
+    return (rollNumber < 0 || rollNumber > 100) ? false : true;
+}
+
+int totalMarks (struct student currentStudent)
+{
+    return (currentStudent.studentMarks[0] 
+                                + currentStudent.studentMarks[1] 
+                                + currentStudent.studentMarks[2]);
+}
+
+float averageMarks (struct student currentStudent)
+{
+    return (currentStudent.studentMarks[0] 
+                                + currentStudent.studentMarks[1] 
+                                + currentStudent.studentMarks[2]) / 3.0;
+}
+
+int getCount (char currentGrade)
+{
+    if (currentGrade == 'A') return 5;
+
+    if (currentGrade == 'B') return 4;
+
+    if (currentGrade == 'C') return 3;
+
+    if (currentGrade == 'D') return 2;
+
+    return 0;
+}
+
+void displayStudents () 
+{
+    for (int index = 0; index < gNumberOfStudents; index++)
+    {
+        printf("Roll: %d\n",studentArray[index].rollNumber);
+        printf("Name: %s\n",studentArray[index].studentName);
+        printf("Total: %d\n",studentArray[index].totalMark);
+        printf("Average: %.2f\n",studentArray[index].averageMark);
+        printf("Grade: %c\n",studentArray[index].studentGrade);
+        if(studentArray[index].averageMark >= 35){
+            int counter = getCount(studentArray[index].studentGrade);
+            printf("Performance: ");
+            for (int asterisk = 0; asterisk < counter; asterisk++)
+            {
+                printf("*");
+            }
+        }
+        printf("\n");
+        printf("\n");
+    }
+}
+
+void displayRollNumberHelper (int countOfStudents)
+{
+    if (countOfStudents == 1)
+    {
+        printf("%d ", countOfStudents);
+        return;
+    }
+    displayRollNumberHelper(countOfStudents - 1);
+    printf("%d ", countOfStudents);
+}
+
+void displayRollNumber (int countOfStudents) 
+{
+    printf("List of roll numbers: ");
+    displayRollNumberHelper(countOfStudents);
+}
+
+int main() 
+{
     printf("\nEnter number of Students: ");
-    scanf("%d", &numberOfStudents);
+    scanf("%d", &gNumberOfStudents);
     getchar();
-    studentArray = malloc(numberOfStudents * sizeof(struct student));
-    for(int index = 0; index < numberOfStudents; index++){
+    studentArray = malloc(gNumberOfStudents * sizeof(struct student));
+    for (int index = 0; index < gNumberOfStudents; index++){
         char inputLine[100];
-        fgets(inputLine, sizeof(inputLine), stdin);
-        sscanf(inputLine ,"%d %s %d %d %d", &studentArray[index].rollNumber, 
-                                studentArray[index].studentName,
-                                &studentArray[index].studentMarks[0],
-                                &studentArray[index].studentMarks[1],
-                                &studentArray[index].studentMarks[2]);
-        studentArray[index].totalMark = studentArray[index].studentMarks[0] 
-                                + studentArray[index].studentMarks[1] 
-                                + studentArray[index].studentMarks[2];
+        int inputCount = 0;
+        do
+        {
+            fgets(inputLine, sizeof(inputLine), stdin);
+            inputLine[strcspn(inputLine, "\n")] = '\0';
+            inputCount = sscanf(inputLine ,"%d %99s %d %d %d", &studentArray[index].rollNumber, 
+                                    studentArray[index].studentName,
+                                    &studentArray[index].studentMarks[0],
+                                    &studentArray[index].studentMarks[1],
+                                    &studentArray[index].studentMarks[2]);
+            if (inputCount != 5) 
+            {
+                printf("Enter valid input format!\n");
+            }
+            if (!isValidRoll(studentArray[index].rollNumber))
+            {
+                printf("Enter valid roll number!\n");
+                inputCount--;
+            }
+        } while (inputCount != 5);
+
+        studentArray[index].totalMark = totalMarks(studentArray[index]);
+        studentArray[index].averageMark = averageMarks(studentArray[index]);
+        studentArray[index].studentGrade = findGrade(studentArray[index].averageMark);
     }
-    for(int index = 0; index < numberOfStudents; index++){
-        printf("%d %s %d\n", studentArray[index].rollNumber, studentArray[index].studentName, studentArray[index].totalMark);
-    }
+    displayStudents();
+    displayRollNumber(gNumberOfStudents);
 }
