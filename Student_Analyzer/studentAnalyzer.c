@@ -20,7 +20,7 @@ static int gNumberOfStudents;
 
 typedef enum Grade
 {
-    A, B, C, D, F
+    F, D, C, B, A
 } grade;
 
 grade getEnumGrade (float currentAverage)
@@ -74,19 +74,6 @@ float averageMarks (student currentStudent)
                                 + currentStudent.studentMarks[2]) / 3.0;
 }
 
-int getCount (char currentGrade)
-{
-    if (currentGrade == 'A') return 5;
-
-    if (currentGrade == 'B') return 4;
-
-    if (currentGrade == 'C') return 3;
-
-    if (currentGrade == 'D') return 2;
-
-    return 0;
-}
-
 void displayStudents () 
 {
     for (int index = 0; index < gNumberOfStudents; index++)
@@ -96,8 +83,10 @@ void displayStudents ()
         printf("Total: %d\n",studentArray[index].totalMark);
         printf("Average: %.2f\n",studentArray[index].averageMark);
         printf("Grade: %c\n",studentArray[index].studentGrade);
-        if(studentArray[index].averageMark >= 35){
-            int counter = getCount(studentArray[index].studentGrade);
+        if (studentArray[index].averageMark >= 35)
+        {
+            grade currentGrade = getEnumGrade(studentArray[index].averageMark);
+            int counter = currentGrade + 1;
             printf("Performance: ");
             for (int asterisk = 0; asterisk < counter; asterisk++)
             {
