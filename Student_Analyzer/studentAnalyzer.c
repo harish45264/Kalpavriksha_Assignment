@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-struct student
+typedef struct
 {
     int rollNumber;
     char studentName[50];
@@ -12,22 +12,47 @@ struct student
     int totalMark;
     float averageMark;
     char studentGrade;
-};
+} student;
 
-struct student *studentArray;
+student *studentArray;
 static int gNumberOfStudents;
 
-char findGrade (float currentAverage)
+
+typedef enum Grade
 {
-    if (currentAverage >= 85) return 'A';
+    A, B, C, D, F
+} grade;
 
-    else if (currentAverage >= 70) return 'B';
+grade getEnumGrade (float currentAverage)
+{
+    if (currentAverage >= 85) return A;
 
-    else if (currentAverage >= 50) return 'C';
+    else if (currentAverage >= 70) return B;
 
-    else if (currentAverage >= 35) return 'D';
+    else if (currentAverage >= 50) return C;
 
-    return 'F';
+    else if (currentAverage >= 35) return D;
+
+    return F;
+}
+
+char getGradeCharacter (grade currentGrade)
+{
+    switch (currentGrade)
+    {
+        case A:
+            return 'A';
+        case B:
+            return 'B';
+        case C:
+            return 'C';
+        case D:
+            return 'D';
+        case F:
+            return 'F';
+        default:
+            return 'N';
+    }
 }
 
 bool isValidRoll (int rollNumber)
@@ -35,14 +60,14 @@ bool isValidRoll (int rollNumber)
     return (rollNumber < 0 || rollNumber > 100) ? false : true;
 }
 
-int totalMarks (struct student currentStudent)
+int totalMarks (student currentStudent)
 {
     return (currentStudent.studentMarks[0] 
                                 + currentStudent.studentMarks[1] 
                                 + currentStudent.studentMarks[2]);
 }
 
-float averageMarks (struct student currentStudent)
+float averageMarks (student currentStudent)
 {
     return (currentStudent.studentMarks[0] 
                                 + currentStudent.studentMarks[1] 
@@ -101,12 +126,12 @@ void displayRollNumber (int countOfStudents)
     displayRollNumberHelper(countOfStudents);
 }
 
-int main() 
+void getStudentDetails ()
 {
     printf("\nEnter number of Students: ");
     scanf("%d", &gNumberOfStudents);
     getchar();
-    studentArray = malloc(gNumberOfStudents * sizeof(struct student));
+    studentArray = malloc(gNumberOfStudents * sizeof(student));
     for (int index = 0; index < gNumberOfStudents; index++){
         char inputLine[100];
         int inputCount = 0;
@@ -132,8 +157,14 @@ int main()
 
         studentArray[index].totalMark = totalMarks(studentArray[index]);
         studentArray[index].averageMark = averageMarks(studentArray[index]);
-        studentArray[index].studentGrade = findGrade(studentArray[index].averageMark);
+        grade currentGrade = getEnumGrade(studentArray[index].averageMark);
+        studentArray[index].studentGrade = getGradeCharacter(currentGrade);
     }
+}
+
+int main() 
+{
+    getStudentDetails();
     displayStudents();
     displayRollNumber(gNumberOfStudents);
 }
