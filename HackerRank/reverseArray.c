@@ -2,6 +2,9 @@
 #include <stdlib.h>
 
 void reverseArray(int left, int right, int *arrayPtr);
+void getInput (int* number, int** arrayPtr);
+void displayOutput (int number, int* arrayPtr);
+void cleanUpMemory (int** arrayPtr);
 
 void reverseArray (int left, int right, int* arrayPtr)
 {
@@ -15,22 +18,36 @@ void reverseArray (int left, int right, int* arrayPtr)
     }
 }
 
-
-int main()
+void getInput (int* number, int** arrayPtr)
 {
-    int number, *arrayPtr, index;
-    scanf("%d", &number);
-    arrayPtr = (int*) malloc(number * sizeof(int));
-    for (index = 0; index < number; index++)
+    printf("\nEnter Number of elements: ");
+    scanf("%d", number);
+    (*arrayPtr) = (int*) malloc((*number) * sizeof(int));
+    printf("\nEnter array elements: \n");
+    for (int index = 0; index < *number; index++)
     {
-        scanf("%d", arrayPtr + index);
+        scanf("%d", (*arrayPtr) + index);
     }
+}
 
-    reverseArray(0, number - 1, arrayPtr);
-
-    for (index = 0; index < number; index++)
+void displayOutput (int number, int* arrayPtr)
+{
+    for (int index = 0; index < number; index++)
     {
         printf("%d ", *(arrayPtr + index));
     }
+}
+
+void cleanUpMemory (int** arrayPtr)
+{
+    free((*arrayPtr));
+}
+
+int main()
+{
+    int number, *arrayPtr;
+    getInput(&number, &arrayPtr);
+    reverseArray(0, number - 1, arrayPtr);
+    displayOutput(number, arrayPtr);
     return 0;
 }
