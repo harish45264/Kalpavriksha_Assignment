@@ -4,6 +4,9 @@
 
 int* rotateArray (int rotateCount, int arrayCount, int* arrayPtr, int* resultCount);
 void reverseArray (int left, int right, int* resultPtr);
+void displayOutput (int* resultPtr, int resultCount);
+void getInput (int* arrayCount, int* rotateCount, int** arrayPtr);
+void cleanUpMemory(int** arrayPtr, int** resultPtr);
 
 void reverseArray (int left, int right, int* resultPtr)
 {
@@ -31,20 +34,37 @@ int* rotateArray (int rotateCount, int arrayCount, int* arrayPtr, int* resultCou
     reverseArray (0, arrayCount - 1, resultPtr);
     return resultPtr;
 }
-int main ()
+
+void getInput (int* arrayCount, int* rotateCount, int** arrayPtr)
 {
-    int arrayCount, rotateCount;
-    scanf("%d %d", &arrayCount, &rotateCount);
-    int *arrayPtr;
-    arrayPtr = malloc (arrayCount * sizeof(int));
-    for (int index = 0; index < arrayCount; index++)
+    printf("\nEnter arrayCount and rotateCount: ");
+    scanf("%d %d", arrayCount, rotateCount);
+    (*arrayPtr) = malloc (*arrayCount * sizeof(int));
+    printf("Enter array elements: \n");
+    for (int index = 0; index < *arrayCount; index++)
     {
-        scanf("%d", arrayPtr + index);
+        scanf("%d", (*arrayPtr) + index);
     }
-    int resultCount;
-    int *resultPtr = rotateArray (rotateCount, arrayCount, arrayPtr, &resultCount);
+}
+
+void displayOutput (int* resultPtr, int resultCount)
+{
     for (int index = 0; index < resultCount; index++)
     {
         printf("%d ", *(resultPtr + index));
     }
+}
+void cleanUpMemory(int** arrayPtr, int** resultPtr)
+{
+    free((*arrayPtr));
+    free((*resultPtr));
+}
+int main ()
+{
+    int arrayCount, rotateCount, resultCount;
+    int *arrayPtr;
+    getInput(&arrayCount, &rotateCount, &arrayPtr);
+    int *resultPtr = rotateArray (rotateCount, arrayCount, arrayPtr, &resultCount);
+    displayOutput(resultPtr, resultCount);
+    cleanUpMemory(&arrayPtr, &resultPtr);
 }
