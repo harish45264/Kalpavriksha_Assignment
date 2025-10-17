@@ -2,8 +2,8 @@
 #include <stdlib.h>
 
 void reverseArray(int left, int right, int *arrayPtr);
-void getInput (int* number, int** arrayPtr);
-void displayOutput (int number, int* arrayPtr);
+void getInput (int* arraySize, int** arrayPtr);
+void displayOutput (int arraySize, int* arrayPtr);
 void cleanUpMemory (int** arrayPtr);
 
 void reverseArray (int left, int right, int* arrayPtr)
@@ -18,23 +18,23 @@ void reverseArray (int left, int right, int* arrayPtr)
     }
 }
 
-void getInput (int* number, int** arrayPtr)
+void getInput (int* arraySize, int** arrayPtr)
 {
     printf("\nEnter Number of elements: ");
-    scanf("%d", number);
-    (*arrayPtr) = (int*) malloc((*number) * sizeof(int));
+    scanf("%d", arraySize);
+    (*arrayPtr) = (int*) malloc((*arraySize) * sizeof(int));
     printf("\nEnter array elements: \n");
-    for (int index = 0; index < *number; index++)
+    for (int rowPos = 0; rowPos < *arraySize; rowPos++)
     {
-        scanf("%d", (*arrayPtr) + index);
+        scanf("%d", (*arrayPtr) + rowPos);
     }
 }
 
-void displayOutput (int number, int* arrayPtr)
+void displayOutput (int arraySize, int* arrayPtr)
 {
-    for (int index = 0; index < number; index++)
+    for (int rowPos = 0; rowPos < arraySize; rowPos++)
     {
-        printf("%d ", *(arrayPtr + index));
+        printf("%d ", *(arrayPtr + rowPos));
     }
 }
 
@@ -45,9 +45,9 @@ void cleanUpMemory (int** arrayPtr)
 
 int main()
 {
-    int number, *arrayPtr;
-    getInput(&number, &arrayPtr);
-    reverseArray(0, number - 1, arrayPtr);
-    displayOutput(number, arrayPtr);
+    int arraySize, *arrayPtr;
+    getInput(&arraySize, &arrayPtr);
+    reverseArray(0, arraySize - 1, arrayPtr);
+    displayOutput(arraySize, arrayPtr);
     return 0;
 }
