@@ -24,9 +24,9 @@ int* rotateArray (int rotateCount, int arrayCount, int* arrayPtr, int* resultCou
 {
     int *resultPtr = malloc (arrayCount * sizeof(int));
     *resultCount = arrayCount;
-    for(int index = 0; index < *resultCount; index++)
+    for(int rowPos = 0; rowPos < *resultCount; rowPos++)
     {
-        *(resultPtr + index) = *(arrayPtr + index);
+        *(resultPtr + rowPos) = *(arrayPtr + rowPos);
     }
     rotateCount = rotateCount % arrayCount;
     reverseArray (0, rotateCount - 1, resultPtr);
@@ -41,17 +41,17 @@ void getInput (int* arrayCount, int* rotateCount, int** arrayPtr)
     scanf("%d %d", arrayCount, rotateCount);
     (*arrayPtr) = malloc (*arrayCount * sizeof(int));
     printf("Enter array elements: \n");
-    for (int index = 0; index < *arrayCount; index++)
+    for (int rowPos = 0; rowPos < *arrayCount; rowPos++)
     {
-        scanf("%d", (*arrayPtr) + index);
+        scanf("%d", (*arrayPtr) + rowPos);
     }
 }
 
 void displayOutput (int* resultPtr, int resultCount)
 {
-    for (int index = 0; index < resultCount; index++)
+    for (int rowPos = 0; rowPos < resultCount; rowPos++)
     {
-        printf("%d ", *(resultPtr + index));
+        printf("%d ", *(resultPtr + rowPos));
     }
 }
 void cleanUpMemory(int** arrayPtr, int** resultPtr)
