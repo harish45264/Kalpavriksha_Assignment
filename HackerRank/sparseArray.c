@@ -6,16 +6,16 @@
 int* findMatching (int stringCount, int queryCount, char*** stringPtr, char*** queryPtr);
 void getInput(int *stringCount, int *queryCount, char*** stringPtr, char*** queryPtr);
 int findLength (char* currRow);
-bool stringEquals (int qLength, int sLength, char* qRow, char* sRow);
+bool stringEquals (int queryLength, int strLength, char* queryRow, char* strRow);
 void displayOutput(int queryCount, int* resultArr);
 void cleanUpMemory (char*** stringPtr, char*** queryPtr, int* resultArr);
 
 void displayOutput(int queryCount, int* resultArr)
 {
     printf("Output:\n");
-    for(int index = 0; index < queryCount; index++)
+    for(int rowPos = 0; rowPos < queryCount; rowPos++)
     {
-        printf("%d\n", *(resultArr + index));
+        printf("%d\n", *(resultArr + rowPos));
     }
 }
 
@@ -36,19 +36,19 @@ int findLength (char* currRow)
     return length;
 }
 
-bool stringEquals (int qLength, int sLength, char* qRow, char* sRow)
+bool stringEquals (int queryLength, int strLength, char* queryRow, char* strRow)
 {
-    if (qLength != sLength)
+    if (queryLength != strLength)
     {
         return false;
     }
-    while (qLength >= 0)
+    while (queryLength >= 0)
     {
-        if (*(qRow + qLength) != *(sRow + qLength))
+        if (*(queryRow + queryLength) != *(strRow + queryLength))
         {
             return false;
         }
-        qLength -= 1;
+        queryLength -= 1;
     }
     return true;
 }
@@ -62,20 +62,20 @@ int* findMatching (int stringCount, int queryCount, char*** stringPtr, char*** q
             free(resultArr);
             return resultArr;
         }
-    for (int qIndex = 0; qIndex < queryCount; qIndex++)
+    for (int queryRowPos = 0; queryRowPos < queryCount; queryRowPos++)
     {
-        char* qRow = *((*queryPtr) + qIndex);
-        int qLength = findLength(qRow), count = 0;
-        for (int sIndex = 0; sIndex < stringCount; sIndex++)
+        char* queryRow = *((*queryPtr) + queryRowPos);
+        int queryLength = findLength(queryRow), count = 0;
+        for (int strRowPos = 0; strRowPos < stringCount; strRowPos++)
         {
-            char* sRow = *((*stringPtr) + sIndex);
-            int sLength = findLength(sRow);
-            if(stringEquals(qLength - 1, sLength - 1, qRow, sRow))
+            char* strRow = *((*stringPtr) + strRowPos);
+            int strLength = findLength(strRow);
+            if(stringEquals(queryLength - 1, strLength - 1, queryRow, strRow))
             {
                 count++;
             }
         }
-        *(resultArr + qIndex) = count;
+        *(resultArr + queryRowPos) = count;
     }
     return resultArr;
 }
@@ -92,16 +92,16 @@ void getInput(int *stringCount, int *queryCount, char*** stringPtr, char*** quer
         return;
     }
     printf("\nEnter strings:\n");
-    for (int index = 0; index < *stringCount; index++)
+    for (int rowPos = 0; rowPos < *stringCount; rowPos++)
     {
-        *((*stringPtr) + index) = malloc(100 * sizeof(char));
-        if (*((*stringPtr) + index) == NULL)
+        *((*stringPtr) + rowPos) = malloc(100 * sizeof(char));
+        if (*((*stringPtr) + rowPos) == NULL)
         {
             printf("Error while allocating memory!");
-            free(*((*stringPtr) + index));
+            free(*((*stringPtr) + rowPos));
             return;
         }
-        scanf("%s", *((*stringPtr) + index));
+        scanf("%s", *((*stringPtr) + rowPos));
     }
     printf("\nEnter query count: ");
     scanf("%d", queryCount);
@@ -113,16 +113,16 @@ void getInput(int *stringCount, int *queryCount, char*** stringPtr, char*** quer
         return;
     }
     printf("\nEnter queries:\n");
-    for (int index = 0; index < *queryCount; index++)
+    for (int rowPos = 0; rowPos < *queryCount; rowPos++)
     {
-        *((*queryPtr) + index) = malloc(100 * sizeof(char));
-        if (*((*queryPtr) + index) == NULL)
+        *((*queryPtr) + rowPos) = malloc(100 * sizeof(char));
+        if (*((*queryPtr) + rowPos) == NULL)
         {
             printf("Error while allocating memory!");
-            free(*((*queryPtr) + index));
+            free(*((*queryPtr) + rowPos));
             return;
         }
-        scanf("%s", *((*queryPtr) + index));
+        scanf("%s", *((*queryPtr) + rowPos));
     }
 }
 
