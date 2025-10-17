@@ -12,25 +12,25 @@ int* jimOrders (int rowCount, int colCount, int*** orders, int* resultCount)
     int* customers = malloc (rowCount * sizeof(int));
     int* serveTime= malloc (rowCount * sizeof(int));
     *resultCount = rowCount;
-    for (int index = 0; index < rowCount; index++)
+    for (int rowPos = 0; rowPos < rowCount; rowPos++)
     {
-        *(customers + index) = index + 1;
-        *(serveTime + index) = *(*((*orders) + index) + 0) + *(*((*orders) + index) + 1);
+        *(customers + rowPos) = rowPos + 1;
+        *(serveTime + rowPos) = *(*((*orders) + rowPos) + 0) + *(*((*orders) + rowPos) + 1);
     }
 
-    for (int index1 = 0; index1 < rowCount; index1++)
+    for (int rowPos = 0; rowPos < rowCount; rowPos++)
     {
-        for (int index2 = 0; index2 < rowCount - index1 - 1; index2++)
+        for (int columnPos = 0; columnPos < rowCount - rowPos - 1; columnPos++)
         {
-            if (*(serveTime + index2) > *(serveTime + index2 + 1))
+            if (*(serveTime + columnPos) > *(serveTime + columnPos + 1))
             {
-                int tempVar = *(serveTime + index2);
-                *(serveTime + index2) = *(serveTime + index2 + 1);
-                *(serveTime + index2 + 1) = tempVar;
+                int tempVar = *(serveTime + columnPos);
+                *(serveTime + columnPos) = *(serveTime + columnPos + 1);
+                *(serveTime + columnPos + 1) = tempVar;
                 
-                tempVar = *(customers + index2);
-                *(customers + index2) = *(customers + index2 + 1);
-                *(customers + index2 + 1) = tempVar;
+                tempVar = *(customers + columnPos);
+                *(customers + columnPos) = *(customers + columnPos + 1);
+                *(customers + columnPos + 1) = tempVar;
             }
         }
     }
@@ -45,9 +45,9 @@ void cleanUpMemory (int*** orders, int** customers)
 
 void displayOutput (int resultCount, int* customers)
 {
-    for(int index = 0; index < resultCount; index++)
+    for(int rowPos = 0; rowPos < resultCount; rowPos++)
     {
-        printf("%d ", *(customers + index));
+        printf("%d ", *(customers + rowPos));
     }
 }
 
@@ -56,13 +56,13 @@ void getInput (int* rowCount, int* colCount, int*** orders)
     printf("Enter Number: ");
     scanf("%d", rowCount);
     (*orders) = malloc (*rowCount * sizeof(int*));
-    for (int index = 0; index < *rowCount; index++)
+    for (int rowPos = 0; rowPos < *rowCount; rowPos++)
     {
-        *((*orders) + index) = malloc (2 * sizeof(int));
+        *((*orders) + rowPos) = malloc (2 * sizeof(int));
     }
-    for (int index = 0; index < *rowCount; index++)
+    for (int rowPos = 0; rowPos < *rowCount; rowPos++)
     {
-        scanf("%d %d", (*((*orders) + index) + 0), (*((*orders) + index) + 1));
+        scanf("%d %d", (*((*orders) + rowPos) + 0), (*((*orders) + rowPos) + 1));
     }
 }
 
