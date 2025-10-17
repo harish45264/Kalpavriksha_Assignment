@@ -18,13 +18,13 @@ resultCode applySmoothening (int*** matrixPtr);
 void cleanUpData (int*** matrixPtr);
 void printResultCode (resultCode result);
 
-const int maxRange = 256;
-static int gSize;
+const int gMaxRange = 256;
+static int gMatrixSize;
 
 resultCode getUserInput ()
 {
     printf("Enter matrixPtr size (2 - 10): ");
-    scanf("%d", &gSize);
+    scanf("%d", &gMatrixSize);
     return RESULT_SUCCESS;
 }
 
@@ -43,15 +43,15 @@ void printResultCode (resultCode result)
 
 resultCode allocateMemory (int*** matrixPtr)
 {
-    (*matrixPtr) = calloc(gSize, sizeof(int*));
+    (*matrixPtr) = calloc(gMatrixSize, sizeof(int*));
     if ((*matrixPtr) == NULL)
     {
         return MEMORY_ERROR;
     }
-    for (int index = 0; index < gSize; index++)
+    for (int rowPos = 0; rowPos < gMatrixSize; rowPos++)
     {
-        *((*matrixPtr) + index) = calloc(gSize, sizeof(int));
-        if (*((*matrixPtr) + index) == NULL)
+        *((*matrixPtr) + rowPos) = calloc(gMatrixSize, sizeof(int));
+        if (*((*matrixPtr) + rowPos) == NULL)
         {
             free((*matrixPtr));
             return MEMORY_ERROR;
@@ -74,11 +74,11 @@ resultCode assignRandomValues (int*** matrixPtr)
     {
         return MEMORY_ERROR;
     }
-    for (int rIndex = 0; rIndex < gSize; rIndex++)
+    for (int rowPos = 0; rowPos < gMatrixSize; rowPos++)
     {
-        for (int cIndex = 0; cIndex < gSize; cIndex++)
+        for (int columnPos = 0; columnPos < gMatrixSize; columnPos++)
         {
-            *(*(currMatrixPtr + rIndex) + cIndex) = rand() % maxRange;
+            *(*(currMatrixPtr + rowPos) + columnPos) = rand() % gMaxRange;
         }
     }
     return RESULT_SUCCESS;
@@ -87,11 +87,11 @@ resultCode assignRandomValues (int*** matrixPtr)
 void displayMatrix (int*** matrixPtr)
 {
     int** currMatrixPtr = (*matrixPtr);
-    for (int rIndex = 0; rIndex < gSize; rIndex++)
+    for (int rowPos = 0; rowPos < gMatrixSize; rowPos++)
     {
-        for (int cIndex = 0; cIndex < gSize; cIndex++)
+        for (int columnPos = 0; columnPos < gMatrixSize; columnPos++)
         {
-            printf("%d ", *(*(currMatrixPtr + rIndex) + cIndex));
+            printf("%d ", *(*(currMatrixPtr + rowPos) + columnPos));
         }
         printf("\n");
     }
@@ -121,15 +121,15 @@ resultCode rotateMatrix (int*** matrixPtr)
     {
         return MEMORY_ERROR;
     }
-    for (int rIndex = 0; rIndex < gSize; rIndex++)
+    for (int rowPos = 0; rowPos < gMatrixSize; rowPos++)
     {
-        for (int cIndex = rIndex + 1; cIndex < gSize; cIndex++)
+        for (int columnPos = rowPos + 1; columnPos < gMatrixSize; columnPos++)
         {
-            int tmpVariable = *(*(currMatrixPtr + rIndex) + cIndex);
-            *(*(currMatrixPtr + rIndex) + cIndex) = *(*(currMatrixPtr + cIndex) + rIndex);
-            *(*(currMatrixPtr + cIndex) + rIndex) = tmpVariable;
+            int tmpVariable = *(*(currMatrixPtr + rowPos) + columnPos);
+            *(*(currMatrixPtr + rowPos) + columnPos) = *(*(currMatrixPtr + columnPos) + rowPos);
+            *(*(currMatrixPtr + columnPos) + rowPos) = tmpVariable;
         }
-        reverseArray(0, gSize - 1, *(currMatrixPtr + rIndex));
+        reverseArray(0, gMatrixSize - 1, *(currMatrixPtr + rowPos));
     }
     return RESULT_SUCCESS;
 }
@@ -142,42 +142,42 @@ resultCode applySmoothening (int*** matrixPtr)
     {
         return MEMORY_ERROR;
     }
-    for (int rIndex = 0; rIndex < gSize; rIndex++)
+    for (int rowPos = 0; rowPos < gMatrixSize; rowPos++)
     {
-        int* tempArray = malloc(gSize * sizeof(int));
+        int* tempArray = malloc(gMatrixSize * sizeof(int));
         if (tempArray == NULL)
         {
             return MEMORY_ERROR;
         }
-        for (int cIndex = 0; cIndex < gSize; cIndex++)
+        for (int columnPos = 0; columnPos < gMatrixSize; columnPos++)
         {
             int count = 0, sum = 0;
-            for (int sIndex1 = rIndex - 1; sIndex1 <= rIndex + 1; sIndex1++)
+            for (int deltaRow = rowPos - 1; deltaRow <= rowPos + 1; deltaRow++)
             {
-                for (int sIndex2 = cIndex - 1; sIndex2 <= cIndex + 1; sIndex2++)
+                for (int deltaColumn = columnPos - 1; deltaColumn <= columnPos + 1; deltaColumn++)
                 {
-                    if(sIndex1 >= 0 && sIndex1 < gSize && sIndex2 >= 0 && sIndex2 < gSize)
+                    if(deltaRow >= 0 && deltaRow < gMatrixSize && deltaColumn >= 0 && deltaColumn < gMatrixSize)
                     {
-                        sum += *(*(currMatrixPtr + sIndex1) + sIndex2);
+                        sum += *(*(currMatrixPtr + deltaRow) + deltaColumn);
                         count += 1;
                     }
                 }
             }
             sum = sum / count;
-            *(tempArray + cIndex) = sum;
+            *(tempArray + columnPos) = sum;
         }
-        if (rIndex > 0)
+        if (rowPos > 0)
         {
-            for (int curIndex = 0; curIndex < gSize; curIndex++)
+            for (int curIndex = 0; curIndex < gMatrixSize; curIndex++)
             {
-                *(*(currMatrixPtr + rIndex - 1) + curIndex) = *(prevTempArray + curIndex);
+                *(*(currMatrixPtr + rowPos - 1) + curIndex) = *(prevTempArray + curIndex);
             }
         }
         prevTempArray = tempArray;
     }
-    for (int curIndex = 0; curIndex < gSize; curIndex++)
+    for (int curIndex = 0; curIndex < gMatrixSize; curIndex++)
     {
-        *(*(currMatrixPtr + gSize - 1) + curIndex) = *(prevTempArray + curIndex);
+        *(*(currMatrixPtr + gMatrixSize - 1) + curIndex) = *(prevTempArray + curIndex);
     }
     return RESULT_SUCCESS;
 }
