@@ -43,7 +43,7 @@ int findLength (char* word);
 resultCode searchByPriceRange ();
 resultCode deleteById ();
 
-
+//Find Length of a string
 int findLength (char* word)
 {
     int length = 0;
@@ -54,6 +54,7 @@ int findLength (char* word)
     return length;
 }
 
+//Partial comparison of strings
 bool stringCompare (char* keyName, char* productName)
 {
     int keyNameLength = findLength (keyName);
@@ -76,6 +77,7 @@ bool stringCompare (char* keyName, char* productName)
     return false;
 }
 
+//Partial search a product using name
 resultCode searchByName ()
 {
     char* keyName;
@@ -95,6 +97,7 @@ resultCode searchByName ()
     return NOT_FOUND;
 }
 
+//search product using range of price
 resultCode searchByPriceRange ()
 {
     int minPrice, maxPrice;
@@ -116,7 +119,7 @@ resultCode searchByPriceRange ()
     return NOT_FOUND;
 }
 
-//Binary search to find product
+//Find a product using its ID
 resultCode searchById ()
 {
     int keyId;
@@ -133,6 +136,7 @@ resultCode searchById ()
     return NOT_FOUND;
 }
 
+//Delete a product using its ID
 resultCode deleteById ()
 {
     int keyId, prodPosition = -1;
@@ -301,12 +305,14 @@ resultCode addInitialProduct ()
     return PRODUCT_ADDED;
 }
 
+//Clear used memory after exiting the program
 void freeUpMemory () 
 {
     free (productArrayPtr);
     printf("Memory released successfully!, Exiting program...");
 }
 
+//Main Function
 int main ()
 {
     resultCode result;
