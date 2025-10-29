@@ -52,5 +52,7 @@ int main()
     scanf("%s", string);
     char* result = isValid(string);
     printf("%s", result);
+    free(result);
+    free(string);
     return 0;
 }
