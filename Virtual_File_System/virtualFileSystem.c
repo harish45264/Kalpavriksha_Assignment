@@ -107,6 +107,38 @@ void freeAllocatedBlock (int index)
     freeBlockTail = newNode;
 }
 
+void depthFirstSearch (fileNode* currNode)
+{
+    if (currNode == NULL)
+    {
+        return;
+    }
+    if (currNode->childHead != NULL)
+    {
+        fileNode* child = currNode->childHead;
+        fileNode* start = child;
+        do
+        {
+            fileNode* nextChild = child->next;
+            depthFirstSearch (child);
+            child = nextChild;
+        } while (start != child);
+    }
+    free(currNode);
+}
+
+void freeAllocatedMemory ()
+{
+    freeBlock* temp = freeBlockHead;
+    while (temp != NULL)
+    {
+        freeBlock* nextBlock = temp->next;
+        free(temp);
+        temp = nextBlock;
+    }
+    depthFirstSearch (rootDir);
+}
+
 fileNode* findNode (fileNode* directory, char* fileName)
 {
     if (directory->childHead == NULL)
@@ -440,6 +472,7 @@ void main ()
         }
         else if (strcmp (command, "exit") == 0)
         {
+            freeAllocatedMemory ();
             printf("\nMemory released. Exiting...");
             gIsRunning = 0;
             break;
